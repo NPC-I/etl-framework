@@ -27,7 +27,7 @@ class TestJSONPipelineIntegration:
     def test_json_pipeline_basic(self):
         """Test basic JSON pipeline with security."""
         # Create pipeline with security
-        pipeline = ETLPipeline(username="test_user", enable_security=True)
+        pipeline = ETLPipeline(username="operator", enable_security=True)
 
         # Register components
         pipeline.register_extractor("json", JSONExtractor(self.validator))
@@ -81,7 +81,7 @@ class TestJSONPipelineIntegration:
     def test_json_pipeline_with_mapping(self):
         """Test JSON pipeline with JSON mapping."""
         # Create pipeline
-        pipeline = ETLPipeline(username="test_user", enable_security=True)
+        pipeline = ETLPipeline(username="operator", enable_security=True)
 
         # Register components
         pipeline.register_extractor("json", JSONExtractor(self.validator))
@@ -161,7 +161,7 @@ class TestJSONPipelineIntegration:
     def test_json_pipeline_with_security_validation(self):
         """Test JSON pipeline with security validation failures."""
         # Create pipeline with production security
-        pipeline = ETLPipeline(username="test_user", enable_security=True)
+        pipeline = ETLPipeline(username="operator", enable_security=True)
 
         # Create validator with production security
         validator_prod = InputValidator(security_level="production")
@@ -203,7 +203,7 @@ class TestJSONPipelineIntegration:
 
     def test_json_pipeline_with_options(self):
         """Test JSON pipeline with LoadOptions."""
-        pipeline = ETLPipeline(username="test_user", enable_security=True)
+        pipeline = ETLPipeline(username="operator", enable_security=True)
 
         pipeline.register_extractor("json", JSONExtractor(self.validator))
         pipeline.register_loader("file", FileLoader())
@@ -358,7 +358,7 @@ class TestJSONPipelineIntegration:
 
     def test_json_pipeline_error_handling(self):
         """Test JSON pipeline error handling."""
-        pipeline = ETLPipeline(username="test_user", enable_security=True)
+        pipeline = ETLPipeline(username="operator", enable_security=True)
 
         pipeline.register_extractor("json", JSONExtractor(self.validator))
         pipeline.register_loader("file", FileLoader())
