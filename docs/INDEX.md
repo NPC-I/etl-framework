@@ -178,4 +178,4 @@ MIT License - See [LICENSE](../LICENSE) for details.
 
 ---
 
-**Note**: This framework provides enterprise-grade security features for data processing pipelines. While these security features can support compliance efforts, the framework focuses on **security** (protecting data and systems) rather than **compliance** (meeting regulatory requirements). Compliance responsibility lies with the application implementing this framework.
+**Note**: This framework provides security features for data processing pipelines. While these security features can support compliance efforts, the framework focuses on **security** (protecting data and systems) rather than **compliance** (meeting regulatory requirements). Compliance responsibility lies with the application implementing this framework.
