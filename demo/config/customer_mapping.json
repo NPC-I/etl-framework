@@ -1,0 +1,120 @@
+{
+  "column_mapping": {
+    "customer_id": "customer_id",
+    "first_name": "first_name",
+    "last_name": "last_name",
+    "email": "email",
+    "phone": "phone",
+    "ssn": "ssn",
+    "credit_card": "credit_card",
+    "address": "address",
+    "city": "city",
+    "state": "state",
+    "zip_code": "zip_code",
+    "date_of_birth": "date_of_birth",
+    "annual_income": "annual_income"
+  },
+  "business_rules": {
+    "security_regions": {
+      "high_security": ["EU", "EEA", "UK", "CA", "US"]
+    },
+    "sensitive_data_patterns": {
+      "ssn": "^\\\\d{3}-\\\\d{2}-\\\\d{4}$",
+      "credit_card": "^\\\\d{16}$",
+      "email": "^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\\\.[a-zA-Z]{2,}$"
+    },
+    "data_retention_periods": {
+      "personal_data": 365,
+      "financial_data": 1825,
+      "audit_logs": 1095
+    },
+    "consent_requirements": {
+      "marketing": true,
+      "data_sharing": true,
+      "analytics": false
+    }
+  },
+  "calculations": [
+    {
+      "name": "full_name",
+      "formula": "first_name + ' ' + last_name",
+      "description": "Combine first and last name"
+    },
+    {
+      "name": "age",
+      "formula": "(pd.Timestamp.now() - pd.to_datetime(date_of_birth)).dt.days // 365",
+      "description": "Calculate age from date of birth"
+    },
+    {
+      "name": "age_group",
+      "formula": "pd.cut(age, bins=[0, 18, 25, 35, 50, 65, 100], labels=['Under 18', '18-24', '25-34', '35-49', '50-64', '65+'])",
+      "description": "Categorize into age groups"
+    },
+    {
+      "name": "income_category",
+      "formula": "pd.cut(annual_income, bins=[0, 30000, 60000, 100000, 200000, 1000000], labels=['Low', 'Lower Middle', 'Middle', 'Upper Middle', 'High'])",
+      "description": "Categorize income levels"
+    },
+    {
+      "name": "region",
+      "formula": "state.map({'CA': 'West', 'NY': 'Northeast', 'TX': 'South', 'IL': 'Midwest', 'AZ': 'West', 'PA': 'Northeast', 'FL': 'South'})",
+      "description": "Map states to regions"
+    },
+    {
+      "name":     "is_high_security_region",
+      "formula": "state.isin(['NY', 'CA', 'IL', 'PA']) & (annual_income > 50000)",
+      "description": "Check if high security region applies"
+    },
+    {
+      "name":     "security_protections_applicable",
+      "formula":     "is_high_security_region",
+      "description": "Flag if security protections apply"
+    },
+    {
+      "name":     "requires_security_review",
+      "formula": "is_high_security_region & (annual_income > 75000)",
+      "description": "Flag for security management review"
+    },
+    {
+      "name": "customer_since_date",
+      "formula": "pd.Timestamp('2023-01-01') + pd.to_timedelta((customer_id.str.extract('(\\\\d+)')[0].astype(int) * 7), unit='D')",
+      "description": "Simulated customer since date"
+    },
+    {
+      "name": "customer_tenure_months",
+      "formula": "((pd.Timestamp.now() - customer_since_date).dt.days / 30).astype(int)",
+      "description": "Customer tenure in months"
+    },
+    {
+      "name": "customer_segment",
+      "formula": "np.select([(annual_income > 100000) & (customer_tenure_months > 24), (annual_income > 50000) & (customer_tenure_months > 12), annual_income > 30000], ['Premium', 'Loyal', 'Standard'], 'New')",
+      "description": "Segment customers based on income and tenure"
+    },
+    {
+      "name":     "security_compliance_score",
+      "formula": "(is_high_security_region * 0.3 + security_protections_applicable * 0.3 + requires_security_review * 0.4) * 100",
+      "description": "Security compliance score (0-100)"
+    }
+  ],
+  "loading_strategy": {
+    "strategy": "upsert",
+    "key_columns": ["customer_id", "email"],
+    "batch_size": 1000,
+    "chunk_size": 500,
+    "create_index": true,
+    "drop_duplicates": true,
+    "options": {
+      "if_exists": "append",
+      "index": false
+    }
+  },
+  "security_config": {
+    "encrypt_columns": ["ssn", "credit_card", "date_of_birth", "annual_income"],
+    "mask_columns": ["email", "phone", "address"],
+    "pseudonymize_columns": ["first_name", "last_name"],
+    "audit_columns": ["customer_id", "full_name", "region", "customer_segment"],
+    "compliance_required": true,
+    "data_retention_enforced": true,
+    "consent_tracking_required": true
+  }
+}

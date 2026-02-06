@@ -1,0 +1,142 @@
+{
+  "column_mapping": {
+    "order_id": "order_id",
+    "customer_name": "customer_name",
+    "door_width": "door_width",
+    "door_height": "door_height",
+    "material": "material",
+    "quantity": "quantity",
+    "unit_price": "unit_price",
+    "order_date": "order_date"
+  },
+  "business_rules": {
+    "material_prices": {
+      "AL": 120.0,
+      "ST": 180.0,
+      "WO": 250.0
+    },
+    "material_descriptions": {
+      "AL": "Aluminum",
+      "ST": "Steel",
+      "WO": "Wood"
+    },
+    "default_price_per_sq_unit": 150.0,
+    "base_installation_days": 2,
+    "profit_margin": 1.3,
+    "lead_time_per_1000_sq_units": 1.0,
+    "min_lead_time_days": 3,
+    "tax_rate": 0.2,
+    "shipping_cost_per_1000_sq_units": 50.0,
+    "warranty_years": 5
+  },
+  "calculations": [
+    {
+      "name": "area_sq_units",
+      "formula": "door_width * door_height",
+      "description": "Door area in square units"
+    },
+    {
+      "name": "material_price_per_sq_unit",
+      "lookup": "material_prices[material]",
+      "description": "Price per square unit based on material",
+      "condition": "has:material"
+    },
+    {
+      "name": "material_description",
+      "lookup": "material_descriptions[material]",
+      "description": "Full material name",
+      "condition": "has:material"
+    },
+    {
+      "name": "effective_price_per_sq_unit",
+      "formula": "material_price_per_sq_unit",
+      "description": "Use material price if available",
+      "condition": "has:material_price_per_sq_unit"
+    },
+    {
+      "name": "effective_price_per_sq_unit",
+      "value": 150.0,
+      "description": "Default price per square unit",
+      "condition": "not:has:material_price_per_sq_unit"
+    },
+    {
+      "name": "calculated_unit_price",
+      "formula": "area_sq_units * effective_price_per_sq_unit",
+      "description": "Calculated price for a single door"
+    },
+    {
+      "name": "final_unit_price",
+      "formula": "unit_price",
+      "description": "Use provided unit price if available",
+      "condition": "has:unit_price"
+    },
+    {
+      "name": "final_unit_price",
+      "formula": "calculated_unit_price",
+      "description": "Use calculated unit price if none provided",
+      "condition": "not:has:unit_price"
+    },
+    {
+      "name": "total_price",
+      "formula": "final_unit_price * quantity",
+      "description": "Total price for order"
+    },
+    {
+      "name": "sale_price",
+      "formula": "total_price * profit_margin",
+      "description": "Sale price with profit margin"
+    },
+    {
+      "name": "tax_amount",
+      "formula": "sale_price * tax_rate",
+      "description": "Tax amount"
+    },
+    {
+      "name": "total_with_tax",
+      "formula": "sale_price + tax_amount",
+      "description": "Total price including tax"
+    },
+    {
+      "name": "raw_lead_time",
+      "formula": "area_sq_units / 1000 * lead_time_per_1000_sq_units",
+      "description": "Raw lead time calculation"
+    },
+    {
+      "name": "lead_time_days",
+      "formula": "raw_lead_time.where(raw_lead_time > min_lead_time_days, min_lead_time_days)",
+      "description": "Lead time with minimum 3 days"
+    },
+    {
+      "name": "installation_days",
+      "formula": "base_installation_days + area_sq_units / 1000000",
+      "description": "Estimated installation time"
+    },
+    {
+      "name": "shipping_cost",
+      "formula": "area_sq_units / 1000 * shipping_cost_per_1000_sq_units",
+      "description": "Shipping cost based on area"
+    },
+    {
+      "name": "total_cost",
+      "formula": "total_with_tax + shipping_cost",
+      "description": "Total cost including shipping"
+    },
+    {
+      "name": "warranty_end_date",
+      "formula": "order_date + pd.DateOffset(years=warranty_years)",
+      "description": "Warranty end date"
+    }
+  ],
+  "loading_strategy": {
+    "strategy": "upsert",
+    "key_columns": ["order_id", "customer_name"],
+    "batch_size": 1000,
+    "chunk_size": 500,
+    "create_index": true,
+    "drop_duplicates": true,
+    "options": {
+      "if_exists": "append",
+      "index": false
+    }
+  }
+}

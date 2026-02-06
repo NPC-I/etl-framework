@@ -1,0 +1,80 @@
+# ETL Framework - Pre-commit Configuration
+# Security-focused hooks for secure ETL operations
+# Version: 1.0.0
+
+repos:
+  # ============================================
+  # BASIC CODE QUALITY HOOKS (LOCAL/FAST)
+  # ============================================
+  - repo: local
+    hooks:
+      - id: trailing-whitespace
+        name: Remove trailing whitespace
+        entry: sed -i 's/[[:space:]]*$//'
+        language: system
+        files: \.(py|md|txt|yaml|yml|json|toml)$
+
+      - id: end-of-file-fixer
+        name: Ensure files end with newline
+        entry: sed -i -e '$a\'
+        language: system
+        files: \.(py|md|txt|yaml|yml|json|toml)$
+
+      - id: check-yaml
+        name: Validate YAML files
+        entry: python -c 'import yaml, sys; yaml.safe_load(open(sys.argv[1]))'
+        language: system
+        files: \.(yaml|yml)$
+        pass_filenames: true
+
+      - id: check-json
+        name: Validate JSON files
+        entry: python -c 'import json, sys; json.load(open(sys.argv[1]))'
+        language: system
+        files: \.(json)$
+        pass_filenames: true
+
+  # ============================================
+  # CODE FORMATTING HOOKS
+  # ============================================
+  - repo: https://github.com/psf/black
+    rev: 23.9.1
+    hooks:
+      - id: black
+        name: Black Code Formatter
+        description: Auto-formats Python code to PEP 8 standards
+        args: ['--line-length', '88', '--target-version', 'py312']
+
+  - repo: https://github.com/pycqa/isort
+    rev: 5.12.0
+    hooks:
+      - id: isort
+        name: isort Import Sorter
+        description: Sorts Python imports alphabetically and automatically
+        args: ['--profile', 'black', '--line-length', '88']
+
+  # ============================================
+  # LINTING HOOKS
+  # ============================================
+  - repo: https://github.com/pycqa/flake8
+    rev: 6.1.0
+    hooks:
+      - id: flake8
+        name: Flake8 Linter
+        description: Python style guide enforcement
+        args: [
+          '--max-line-length=88',
+          '--extend-ignore=E203,W503',
+          '--per-file-ignores=__init__.py:F401'
+        ]
+
+# ============================================
+# CONFIGURATION OPTIONS
+# ============================================
+default_stages: [pre-commit]
+
+default_language_version:
+  python: python3.12
+
+# Minimum pre-commit version
+minimum_pre_commit_version: 2.17.0

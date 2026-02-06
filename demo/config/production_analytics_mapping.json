@@ -1,0 +1,24 @@
+{
+  "calculations": [
+    {
+      "name": "customer_lifetime_value",
+      "formula": "total_amount * 0.3",
+      "description": "Estimated customer lifetime value"
+    },
+    {
+      "name": "avg_order_value",
+      "formula": "total_amount.mean()",
+      "description": "Average order value"
+    },
+    {
+      "name": "orders_per_customer",
+      "formula": "order_id.count() / customer_id.nunique()",
+      "description": "Average orders per customer"
+    },
+    {
+      "name": "revenue_by_month",
+      "formula": "total_amount.groupby(order_month).sum()",
+      "description": "Monthly revenue"
+    }
+  ]
+}

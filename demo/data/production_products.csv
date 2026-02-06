@@ -1,0 +1,11 @@
+product_id,product_name,category,price,cost,in_stock,supplier,warranty_months
+PROD001,Product 1,Clothing,60.0,38.0,False,Supplier2,24
+PROD002,Product 2,Home,70.0,46.0,True,Supplier3,36
+PROD003,Product 3,Books,80.0,54.0,False,Supplier1,12
+PROD004,Product 4,Electronics,90.0,62.0,True,Supplier2,24
+PROD005,Product 5,Clothing,100.0,70.0,False,Supplier3,36
+PROD006,Product 6,Home,110.0,78.0,True,Supplier1,12
+PROD007,Product 7,Books,120.0,86.0,False,Supplier2,24
+PROD008,Product 8,Electronics,130.0,94.0,True,Supplier3,36
+PROD009,Product 9,Clothing,140.0,102.0,False,Supplier1,12
+PROD010,Product 10,Home,150.0,110.0,True,Supplier2,24

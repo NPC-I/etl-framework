@@ -1,0 +1,6 @@
+customer_id,first_name,last_name,email,phone,ssn,credit_card,date_of_birth,annual_income,address,medical_record_number,insurance_policy
+C001,John,Smith,john.smith@example.com,555-0101,123-45-6789,4111111111111111,1980-05-15,85000,"123 Main St, New York, NY 10001",MRN001,POL001
+C002,Jane,Doe,jane.doe@example.com,555-0102,987-65-4321,4222222222222222,1985-08-22,92000,"456 Oak Ave, Los Angeles, CA 90001",MRN002,POL002
+C003,Robert,Johnson,robert.j@example.com,555-0103,456-78-9012,4333333333333333,1978-12-10,78000,"789 Pine Rd, Chicago, IL 60601",MRN003,POL003
+C004,Emily,Williams,emily.w@example.com,555-0104,321-54-8765,4444444444444444,1990-03-30,65000,"321 Elm St, Houston, TX 77001",MRN004,POL004
+C005,Michael,Brown,michael.b@example.com,555-0105,654-32-1098,4555555555555555,1982-07-18,88000,"654 Maple Dr, Phoenix, AZ 85001",MRN005,POL005

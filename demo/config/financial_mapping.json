@@ -1,0 +1,125 @@
+{
+  "column_mapping": {
+    "transaction_id": "transaction_id",
+    "account_number": "account_number",
+    "customer_id": "customer_id",
+    "transaction_date": "transaction_date",
+    "transaction_type": "transaction_type",
+    "amount": "amount",
+    "currency": "currency",
+    "description": "description",
+    "merchant": "merchant",
+    "location": "location"
+  },
+  "business_rules": {
+    "exchange_rates": {
+      "USD": 1.0,
+      "EUR": 0.85,
+      "GBP": 0.73,
+      "JPY": 110.0,
+      "CAD": 1.25
+    },
+    "tax_rates": {
+      "US": 0.07,
+      "CA": 0.05,
+      "UK": 0.20,
+      "DE": 0.19,
+      "FR": 0.20
+    },
+    "fraud_threshold": 10000.0,
+    "suspicious_patterns": ["CASINO", "GAMBLING", "CRYPTO", "OFFSHORE"],
+    "high_risk_merchants": ["Online Gambling", "Cryptocurrency Exchange", "Adult Services"],
+    "compliance_limits": {
+      "daily_withdrawal": 5000.0,
+      "monthly_transfer": 20000.0,
+      "single_transaction": 10000.0
+    }
+  },
+  "calculations": [
+    {
+      "name": "amount_usd",
+      "formula": "amount * exchange_rates[currency]",
+      "description": "Convert amount to USD",
+      "condition": "has:currency"
+    },
+    {
+      "name": "amount_usd",
+      "formula": "amount",
+      "description": "Assume USD if no currency specified",
+      "condition": "not:has:currency"
+    },
+    {
+      "name": "is_high_value",
+      "formula": "amount_usd > fraud_threshold",
+      "description": "Flag high-value transactions"
+    },
+    {
+      "name": "is_suspicious_description",
+      "formula": "description.str.contains('|'.join(suspicious_patterns), case=False, na=False)",
+      "description": "Flag suspicious transaction descriptions"
+    },
+    {
+      "name": "is_high_risk_merchant",
+      "formula": "merchant.isin(high_risk_merchants)",
+      "description": "Flag high-risk merchants"
+    },
+    {
+      "name": "fraud_risk_score",
+      "formula": "(is_high_value * 0.4 + is_suspicious_description * 0.3 + is_high_risk_merchant * 0.3) * 100",
+      "description": "Calculate fraud risk score (0-100)"
+    },
+    {
+      "name": "requires_compliance_review",
+      "formula": "fraud_risk_score > 50",
+      "description": "Flag transactions requiring compliance review"
+    },
+    {
+      "name": "transaction_month",
+      "formula": "transaction_date.dt.to_period('M')",
+      "description": "Extract transaction month for reporting"
+    },
+    {
+      "name": "transaction_quarter",
+      "formula": "transaction_date.dt.quarter",
+      "description": "Extract transaction quarter"
+    },
+    {
+      "name": "transaction_year",
+      "formula": "transaction_date.dt.year",
+      "description": "Extract transaction year"
+    },
+    {
+      "name": "is_weekend",
+      "formula": "transaction_date.dt.dayofweek >= 5",
+      "description": "Flag weekend transactions"
+    },
+    {
+      "name": "transaction_hour",
+      "formula": "transaction_date.dt.hour",
+      "description": "Extract transaction hour"
+    },
+    {
+      "name": "is_off_hours",
+      "formula": "(transaction_hour < 9) | (transaction_hour > 17)",
+      "description": "Flag off-hours transactions"
+    }
+  ],
+  "loading_strategy": {
+    "strategy": "append",
+    "key_columns": ["transaction_id"],
+    "batch_size": 5000,
+    "chunk_size": 1000,
+    "create_index": true,
+    "drop_duplicates": true,
+    "options": {
+      "if_exists": "append",
+      "index": false
+    }
+  },
+  "security_config": {
+    "encrypt_columns": ["account_number", "customer_id"],
+    "mask_columns": ["amount"],
+    "audit_columns": ["transaction_id", "transaction_date", "amount_usd", "fraud_risk_score"],
+    "compliance_required": true
+  }
+}

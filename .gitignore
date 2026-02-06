@@ -1,0 +1,57 @@
+# ========== GENERATED/BUILD FILES (NOT in git) ==========
+# These are created during build/development
+
+# Build artifacts
+build/
+dist/
+*.egg-info/
+
+# Python cache
+__pycache__/
+*.py[cod]
+*$py.class
+.pytest_cache/
+.mypy_cache/
+.coverage
+htmlcov/
+
+# Environments
+.env
+.venv
+venv/
+env/
+
+# IDE files
+.idea/
+.vscode/
+*.swp
+*.swo
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# ========== USER DATA/SECRETS (NOT in git) ==========
+# These contain sensitive or user-specific data
+
+# Local data files
+logs/           # Log files
+
+# Configuration with secrets
+*.local.*       # Local config files
+.continue/
+/config/
+/mappings/
+/data/
+/logs/
+
+# ========== PRE-COMMIT GENERATED FILES ONLY ==========
+# ONLY add pre-commit generated files, nothing else
+bandit-report.json
+safety-report.json
+.pre-commit-config.yaml.bak
+.secrets.baseline
+.pre-commit-cache/
+.pre-commit-db/
+.pre-commit-hooks.yaml
+.pre-commit-hooks.yml

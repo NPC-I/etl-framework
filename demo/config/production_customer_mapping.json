@@ -1,0 +1,91 @@
+{
+  "column_mapping": {
+    "customer_id": "customer_id",
+    "first_name": "first_name",
+    "last_name": "last_name",
+    "email": "email",
+    "phone": "phone",
+    "ssn": "ssn",
+    "date_of_birth": "date_of_birth",
+    "address": "address",
+    "customer_since": "customer_since",
+    "loyalty_tier": "loyalty_tier",
+    "annual_income": "annual_income"
+  },
+  "business_rules": {
+    "security_regions": {
+      "high_security": [
+        "EU",
+        "EEA",
+        "UK",
+        "CA"
+      ]
+    },
+    "data_retention_days": {
+      "personal_data": 365,
+      "financial_data": 1825
+    },
+    "consent_required": true
+  },
+  "calculations": [
+    {
+      "name": "full_name",
+      "formula": "first_name + ' ' + last_name",
+      "description": "Customer full name"
+    },
+    {
+      "name": "age",
+      "formula": "(pd.Timestamp.now() - pd.to_datetime(date_of_birth)).dt.days // 365",
+      "description": "Customer age"
+    },
+    {
+      "name": "customer_tenure_days",
+      "formula": "(pd.Timestamp.now() - pd.to_datetime(customer_since)).dt.days",
+      "description": "Days since customer joined"
+    },
+    {
+      "name": "is_active_customer",
+      "formula": "customer_tenure_days < 365",
+      "description": "Active customer (joined within last year)"
+    },
+    {
+      "name": "income_category",
+      "formula": "pd.cut(annual_income, bins=[0, 30000, 60000, 100000, float('inf')], labels=['Low', 'Medium', 'High', 'Very High'])",
+      "description": "Income category"
+    },
+    {
+      "name":     "requires_enhanced_security",
+      "formula": "income_category.isin(['High', 'Very High'])",
+      "description": "Enhanced security required for high-income customers"
+    }
+  ],
+  "loading_strategy": {
+    "strategy": "upsert",
+    "key_columns": [
+      "customer_id",
+      "email"
+    ],
+    "batch_size": 1000,
+    "create_index": true,
+    "drop_duplicates": true
+  },
+  "security_config": {
+    "encrypt_columns": [
+      "ssn",
+      "date_of_birth",
+      "annual_income",
+      "address"
+    ],
+    "mask_columns": [
+      "email",
+      "phone"
+    ],
+    "audit_columns": [
+      "customer_id",
+      "full_name",
+      "loyalty_tier",
+      "income_category"
+    ],
+    "compliance_required": true
+  }
+}

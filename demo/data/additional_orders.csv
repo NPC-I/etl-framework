@@ -1,0 +1,2 @@
+order_id,customer_id,product_id,quantity,unit_price,order_date,status,last_updated
+ORD0011,CUST001,PROD001,3,150.0,2024-01-11,pending,2026-02-05 14:41:34

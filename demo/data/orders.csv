@@ -1,0 +1,11 @@
+order_id,customer_name,door_width,door_height,material,quantity,unit_price,order_date
+1001,Acme Corporation,2400,2100,AL,2,1250.00,2024-01-15
+1002,Globex Inc,3000,2500,ST,1,1800.50,2024-01-16
+1003,Initech LLC,2700,2200,AL,3,1350.75,2024-01-17
+1004,Umbrella Corporation,3200,2800,WO,1,2200.00,2024-01-18
+1005,Stark Industries,2800,2400,ST,2,1600.25,2024-01-19
+1006,Wayne Enterprises,2600,2300,AL,4,1400.00,2024-01-20
+1007,Oscorp Industries,2900,2500,ST,1,1750.00,2024-01-21
+1008,Pym Technologies,3100,2700,WO,2,2100.00,2024-01-22
+1009,Axis Chemicals,2500,2200,AL,3,1300.00,2024-01-23
+1010,Roxxon Energy,3300,2900,ST,1,1900.00,2024-01-24

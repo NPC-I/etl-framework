@@ -1,0 +1,98 @@
+[build-system]
+requires = ["setuptools>=61.0", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "etl-framework"
+description = "A modular, JSON-driven ETL framework for data processing with enterprise-grade security"
+version = "1.0.0"  # Major release with security features and breaking changes
+authors = [
+    {name = "Nathan Calow", email = "nathan@npc-it.co.uk"}
+]
+readme = {file = "README.md", content-type = "text/markdown"}
+license = "MIT"
+license-files = ["LICEN[CS]E*"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "Intended Audience :: Developers",
+    "Intended Audience :: Science/Research",
+    "Intended Audience :: System Administrators",
+    "Topic :: Database",
+    "Topic :: Scientific/Engineering",
+    "Topic :: Software Development :: Libraries :: Python Modules",
+    "Topic :: System :: Systems Administration",
+    "Operating System :: OS Independent",
+    "Programming Language :: Python :: 3",
+    "Programming Language :: Python :: 3.8",
+    "Programming Language :: Python :: 3.9",
+    "Programming Language :: Python :: 3.10",
+    "Programming Language :: Python :: 3.11",
+    "Programming Language :: Python :: 3.12",
+    "Framework :: Pytest",
+    "Natural Language :: English",
+    "License :: OSI Approved :: MIT License",
+]
+keywords = ["etl", "data-pipeline", "data-processing", "json-configuration", "pandas", "security", "rbac", "encryption", "audit-logging"]
+requires-python = ">=3.8"
+dependencies = [
+    "pandas>=2.0.0",
+    "cryptography>=41.0.0",
+]
+
+[project.optional-dependencies]
+pdf = ["pdfplumber>=0.10.0"]
+excel = ["openpyxl>=3.1.0", "xlrd>=2.0.0"]
+postgresql = ["psycopg2-binary>=2.9.0"]
+mysql = ["pymysql>=1.0.0"]
+sql = ["SQLAlchemy>=2.0.0"]
+dotenv = ["python-dotenv>=1.0.0"]
+security = [
+    "pip-audit>=2.10.0",
+    "bandit>=1.7.0",
+    "safety>=2.0.0",
+    "pre-commit>=3.0.0",
+]
+test = ["pytest>=7.0.0", "pytest-cov"]
+dev = [
+    "black",
+    "isort",
+    "flake8",
+    "mypy",
+    "pre-commit",
+]
+all = [
+    "pdfplumber>=0.10.0",
+    "openpyxl>=3.1.0",
+    "xlrd>=2.0.0",
+    "psycopg2-binary>=2.9.0",
+    "pymysql>=1.0.0",
+    "SQLAlchemy>=2.0.0",
+    "python-dotenv>=1.0.0",
+
+]
+
+[project.urls]
+Homepage = "https://github.com/NPC-I/etl-framework"
+Documentation = "https://github.com/NPC-I/etl-framework"
+Repository = "https://github.com/NPC-I/etl-framework.git"
+Issues = "https://github.com/NPC-I/etl-framework/issues"
+
+[project.scripts]
+etl-framework = "etl_framework.cli.main:main"
+
+[tool.setuptools]
+packages.find = {where = ["src"]}
+
+[tool.black]
+line-length = 88
+target-version = ['py38']
+
+[tool.isort]
+profile = "black"
+line_length = 88
+
+[tool.mypy]
+python_version = "3.8"
+warn_return_any = true
+warn_unused_configs = true
+disallow_untyped_defs = true

@@ -1,0 +1,67 @@
+{
+  "column_mapping": {
+    "order_id": "order_id",
+    "customer_id": "customer_id",
+    "order_date": "order_date",
+    "product_id": "product_id",
+    "quantity": "quantity",
+    "unit_price": "unit_price",
+    "payment_method": "payment_method",
+    "status": "status",
+    "shipping_address": "shipping_address"
+  },
+  "business_rules": {
+    "tax_rate": 0.2,
+    "shipping_rates": {
+      "standard": 5.99,
+      "express": 12.99,
+      "overnight": 24.99
+    },
+    "discount_tiers": {
+      "Bronze": 0.0,
+      "Silver": 0.05,
+      "Gold": 0.1
+    }
+  },
+  "calculations": [
+    {
+      "name": "subtotal",
+      "formula": "quantity * unit_price",
+      "description": "Order subtotal"
+    },
+    {
+      "name": "tax_amount",
+      "formula": "subtotal * tax_rate",
+      "description": "Tax amount"
+    },
+    {
+      "name": "total_amount",
+      "formula": "subtotal + tax_amount",
+      "description": "Total amount"
+    },
+    {
+      "name": "order_month",
+      "formula": "order_date.dt.to_period('M')",
+      "description": "Order month for reporting"
+    },
+    {
+      "name": "order_quarter",
+      "formula": "order_date.dt.quarter",
+      "description": "Order quarter"
+    },
+    {
+      "name": "is_recent_order",
+      "formula": "(pd.Timestamp.now() - pd.to_datetime(order_date)).dt.days <= 30",
+      "description": "Order placed within last 30 days"
+    }
+  ],
+  "loading_strategy": {
+    "strategy": "append",
+    "key_columns": [
+      "order_id"
+    ],
+    "batch_size": 5000,
+    "create_index": true,
+    "drop_duplicates": true
+  }
+}

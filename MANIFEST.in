@@ -1,0 +1,57 @@
+# ========== INCLUDE: Package Metadata ==========
+# These files MUST be included in the PyPI package
+include LICENSE
+include README.md
+include pyproject.toml
+include setup.py
+include QUICK_START.md
+
+# ========== INCLUDE: Source Code ==========
+# All Python source files in the package
+recursive-include src/etl_framework *.py
+
+# ========== EXCLUDE: Development Files ==========
+# These should NOT be in the PyPI package
+
+# Test files and directories
+exclude tests/
+exclude test_*.py
+
+# Example files and directories
+exclude examples/
+
+# Development requirements
+exclude requirements-dev.txt
+
+# Build and cache files
+exclude *.pyc
+exclude *.pyo
+exclude *~
+exclude .coverage
+
+# ========== EXCLUDE: User Data & Config ==========
+# These are application-specific, not package files
+exclude config/
+exclude data/
+exclude logs/
+exclude *.db
+exclude *.sqlite
+
+# ========== EXCLUDE: Git & IDE Files ==========
+# Version control and IDE files
+exclude .git
+exclude .gitignore
+exclude .vscode/
+exclude .idea/
+
+# ========== EXCLUDE: Environments ==========
+# Virtual environments
+exclude .venv
+exclude venv/
+exclude .env
+exclude .env.example
+exclude pytest.ini
+
+# ========== EXCLUDE: Legacy Files ==========
+# Old files that no longer exist (kept for safety)
+exclude .continue/
