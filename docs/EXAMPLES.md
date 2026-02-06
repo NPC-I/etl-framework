@@ -1,8 +1,3 @@
-I understand. Let me create the Examples documentation with a more manageable approach. I'll create it in parts or provide a summary first.
-
-Let me create a comprehensive examples documentation that covers all the key use cases:
-
-```markdown
 # ETL Framework Examples
 
 ## 📚 Examples Overview
