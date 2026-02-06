@@ -1110,21 +1110,13 @@ for size in [1000, 10000, 100000]:
 4. **Workflow orchestration**: DAG-based pipeline scheduling
 5. **Machine learning integration**: ML model deployment and scoring
 
-### Roadmap
-
-- **Q1 2024**: Streaming support beta
-- **Q2 2024**: Cloud integration v1
-- **Q3 2024**: Advanced monitoring
-- **Q4 2024**: Workflow orchestration
-
 ## 📞 Support
 
 ### Getting Help
 
 1. **Documentation**: Check the documentation first
 2. **GitHub Issues**: Report bugs and request features
-3. **Security Issues**: Contact security@npc-it.co.uk
-4. **Community**: Join the community forum (if available)
+3. **Security Issues**: Contact nathan@npc-it.co.uk
 
 ### Reporting Issues
 
@@ -1141,10 +1133,8 @@ When reporting issues, include:
 For security vulnerabilities:
 
 1. **Do not disclose publicly**: Use private channels
-2. **Contact security team**: security@npc-it.co.uk
+2. **Contact security team**: nathan@npc-it.co.uk
 3. **Provide details**: Vulnerability description, impact, reproduction steps
-4. **Follow responsible disclosure**: Allow time for fix before disclosure
-
 ---
 
 This developer guide provides comprehensive information for extending and contributing to the ETL Framework. For additional help, refer to the [API Reference](API_REFERENCE.md) and [Examples](EXAMPLES.md).
