@@ -244,8 +244,3 @@ jobs:
           bandit-release.json
           safety-release.json
         retention-days: 90
-
-
-Looking at this GitHub Actions workflow, I can see you're implementing a robust CI/CD pipeline for your ETL framework. The suggested edit adds more graceful handling of test failures during release validation. Let me apply this change while maintaining the existing structure and comments.
-
-Here's the updated `test-release` job with the suggested edit applied:
