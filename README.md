@@ -44,7 +44,7 @@ A **fully JSON-driven**, modular ETL framework designed for extracting data from
 
 ## 📦 Installation
 
-### From PyPI (Recommended)
+### From PyPI (Recommended)(Coming Very Very Soon)
 
 ```bash
 # Install minimal version (works with CSV/JSON out of the box)
