@@ -12,9 +12,9 @@ A **fully JSON-driven**, modular ETL framework designed for extracting data from
 - **Database Agnostic**: SQL loading via SQLAlchemy (PostgreSQL, MySQL, SQLite, etc.)
 - **Environment-Aware**: Configuration via environment variables (`.env` file supported)
 - **Smart Loading Strategies**: 5 loading strategies including UPSERT (update + insert)
-- **Enterprise Security**: Role-Based Access Control, data encryption, audit logging, input validation
+- **Security**: Role-Based Access Control, data encryption, audit logging, input validation
 
-## 🔒 Enterprise Security Features
+## 🔒 Security Features
 
 ### 1. Role-Based Access Control (RBAC)
 - **6 Predefined Roles**: Admin, Operator, Viewer, Auditor, Data Steward, System
