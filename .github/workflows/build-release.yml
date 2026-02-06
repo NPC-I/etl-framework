@@ -50,7 +50,7 @@ jobs:
       run: |
         # Test installing the built package
         pip install dist/*.whl
-        python -c \"import etl_framework; print(f'Successfully imported {etl_framework.__version__}')\"
+        python -c "import etl_framework; print(f'Successfully imported {etl_framework.__version__}')"
 
     - name: Upload build artifacts
       uses: actions/upload-artifact@v4
@@ -82,20 +82,20 @@ jobs:
 
     - name: Run release tests
       run: |
-        echo \"Running release validation tests...\"
+        echo "Running release validation tests..."
         
         # Test basic functionality
-        python -c \"
+        python -c '
         from etl_framework.security.config import SecurityConfig
         config = SecurityConfig.from_environment()
-        print(f'Security config loaded: {config.security_level.value}')
-        \"
+        print(f"Security config loaded: {config.security_level.value}")
+        '
         
         # Test CLI
         python -m etl_framework.cli --help
         
         # Run critical tests
-        pytest tests/ -m \"not slow and not performance\" -v --tb=short
+        pytest tests/ -m "not slow and not performance" -v --tb=short
 
   create-release:
     name: Create Release
@@ -129,36 +129,30 @@ jobs:
       run: |
         # Extract version from tag
         VERSION=${GITHUB_REF#refs/tags/v}
-        echo \"version=$VERSION\" >> $GITHUB_OUTPUT
+        echo "version=$VERSION" >> $GITHUB_OUTPUT
         
         # Generate basic release notes
-        NOTES=\"# Release v$VERSION\
-\
-\"
-        NOTES+=\"## Security Features\
-\"
-        NOTES+=\"- Role-Based Access Control (RBAC) with 6 predefined roles\
-\"
-        NOTES+=\"- Data encryption for sensitive columns\
-\"
-        NOTES+=\"- Comprehensive audit logging\
-\"
-        NOTES+=\"- Input validation and sanitization\
-\
-\"
-        NOTES+=\"## Installation\
-\
-\"
-        NOTES+=\"\`\`\`bash\
-\"
-        NOTES+=\"pip install etl-framework\
-\"
-        NOTES+=\"\`\`\`\
-\"
+        cat > release_notes.md << 'EOF'
+        # Release v$VERSION
         
-        echo \"notes<<EOF\" >> $GITHUB_OUTPUT
-        echo \"$NOTES\" >> $GITHUB_OUTPUT
-        echo \"EOF\" >> $GITHUB_OUTPUT
+        ## Security Features
+        - Role-Based Access Control (RBAC) with 6 predefined roles
+        - Data encryption for sensitive columns
+        - Comprehensive audit logging
+        - Input validation and sanitization
+        
+        ## Installation
+        
+        ```bash
+        pip install etl-framework
+        ```
+        EOF
+        
+        # Read the notes and output
+        NOTES=$(cat release_notes.md)
+        echo "notes<<EOF" >> $GITHUB_OUTPUT
+        echo "$NOTES" >> $GITHUB_OUTPUT
+        echo "EOF" >> $GITHUB_OUTPUT
 
     - name: Create GitHub Release
       uses: softprops/action-gh-release@v1
@@ -180,7 +174,7 @@ jobs:
       name: pypi
       url: https://pypi.org/p/etl-framework
     permissions:
-      id-token: write  
+      id-token: write  # Required for trusted publishing
 
     steps:
     - name: Download build artifacts
@@ -217,24 +211,27 @@ jobs:
 
     - name: Run security scan
       run: |
-        echo \"🔒 Running security scan for release...\"
+        echo "🔒 Running security scan for release..."
         
+        # Bandit scan
         bandit -r src -f json -o bandit-release.json -ll
         
+        # Safety check
         safety check --json > safety-release.json
-
-        BANDIT_ISSUES=$(jq '.results | length' bandit-release.json 2>/dev/null || echo \"0\")
-        SAFETY_ISSUES=$(jq '.vulnerabilities | length' safety-release.json 2>/dev/null || echo \"0\")
         
-        echo \"Bandit issues: $BANDIT_ISSUES\"
-        echo \"Safety issues: $SAFETY_ISSUES\"
+        # Check for critical issues
+        BANDIT_ISSUES=$(jq '.results | length' bandit-release.json 2>/dev/null || echo "0")
+        SAFETY_ISSUES=$(jq '.vulnerabilities | length' safety-release.json 2>/dev/null || echo "0")
         
-        if [ \"$BANDIT_ISSUES\" -gt 5 ] || [ \"$SAFETY_ISSUES\" -gt 0 ]; then
-          echo \"::error::Security issues found. Cannot proceed with release.\"
+        echo "Bandit issues: $BANDIT_ISSUES"
+        echo "Safety issues: $SAFETY_ISSUES"
+        
+        if [ "$BANDIT_ISSUES" -gt 5 ] || [ "$SAFETY_ISSUES" -gt 0 ]; then
+          echo "::error::Security issues found. Cannot proceed with release."
           exit 1
         fi
         
-        echo \"✅ Security scan passed\"
+        echo "✅ Security scan passed"
 
     - name: Upload security reports
       uses: actions/upload-artifact@v4
