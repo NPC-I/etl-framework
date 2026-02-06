@@ -2,7 +2,7 @@
 ETL Framework for data extraction, transformation, and loading.
 """
 
-__version__ = "1.0.0"  # Updated to 1.0.0 for major release
+__version__ = "1.0.1"  # Updated to 1.0.1 for patch release
 
 # Configuration
 from etl_framework.config.settings import config

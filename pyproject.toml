@@ -5,7 +5,7 @@ build-backend = "setuptools.build_meta"
 [project]
 name = "etl-framework"
 description = "A modular, JSON-driven ETL framework for data processing with enterprise-grade security"
-version = "1.0.0"  # Major release with security features and breaking changes
+version = "1.0.1"  # Patch release with CI/CD improvements and bug fixes
 authors = [
     {name = "Nathan Calow", email = "nathan@npc-it.co.uk"}
 ]
