@@ -9,6 +9,7 @@ Welcome to the ETL Framework documentation. This modular, JSON-driven ETL framew
 - **[Getting Started](GETTING_STARTED.md)** - Installation and basic setup
 - **[User Guide](USER_GUIDE.md)** - Complete usage instructions
 - **[Security Guide](SECURITY_GUIDE.md)** - Security features and configuration
+- **[CI/CD Guide](CI_CD_GUIDE.md)** - Automated security gates and deployment
 - **[API Reference](API_REFERENCE.md)** - Detailed API documentation
 - **[Examples](EXAMPLES.md)** - Practical usage examples
 - **[Developer Guide](DEVELOPER_GUIDE.md)** - Extending and contributing
@@ -30,6 +31,7 @@ Welcome to the ETL Framework documentation. This modular, JSON-driven ETL framew
 - **Input Validation**: Comprehensive validation for SQL, formulas, and file paths
 - **Audit Logging**: Structured JSON audit trails for security monitoring
 - **Secure Configuration**: Environment-based security with 4 security levels
+- **CI/CD Security Gates**: Automated security scanning and compliance checks"
 
 ## 📦 Installation
 
@@ -123,8 +125,13 @@ ETL_Framework/
 │   ├── security/               # Security components (RBAC, encryption, audit logging)
 │   ├── config/                 # Configuration management
 │   └── cli/                    # Command-line interface
+├── .github/workflows/          # CI/CD workflows with security gates
+│   ├── security-audit.yml      # Comprehensive security scanning
+│   ├── test-suite.yml          # Multi-python testing
+│   ├── build-release.yml       # Automated packaging and publishing
+│   └── demo-validation.yml     # Demo script validation
 ├── config/                     # Configuration files
-│   └── mappings/               # JSON mapping files (business logic here!)
+│   └── mappings/   
 ├── data/                       # Sample data files
 ├── tests/                      # Test suite
 ├── examples/                   # Usage examples

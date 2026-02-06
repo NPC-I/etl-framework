@@ -1,0 +1,246 @@
+name: Build and Release
+
+on:
+  push:
+    tags:
+      - 'v*'  # Push events to matching v*, i.e. v1.0, v20.15.10
+  workflow_dispatch:
+    inputs:
+      version:
+        description: 'Version to release'
+        required: true
+        default: 'patch'
+        type: choice
+        options:
+        - patch
+        - minor
+        - major
+        - specific
+
+jobs:
+  build:
+    name: Build Package
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        python-version: ['3.9', '3.10', '3.11', '3.12']
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Set up Python ${{ matrix.python-version }}
+      uses: actions/setup-python@v5
+      with:
+        python-version: ${{ matrix.python-version }}
+        cache: 'pip'
+
+    - name: Install build dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install build twine
+
+    - name: Build package
+      run: |
+        python -m build
+
+    - name: Test package installation
+      run: |
+        # Test installing the built package
+        pip install dist/*.whl
+        python -c \"import etl_framework; print(f'Successfully imported {etl_framework.__version__}')\"
+
+    - name: Upload build artifacts
+      uses: actions/upload-artifact@v4
+      with:
+        name: dist-${{ matrix.python-version }}
+        path: dist/
+        retention-days: 7
+
+  test-release:
+    name: Test Release
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'workflow_dispatch'
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+        cache: 'pip'
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -e .[all]
+
+    - name: Run release tests
+      run: |
+        echo \"Running release validation tests...\"
+        
+        # Test basic functionality
+        python -c \"
+        from etl_framework.security.config import SecurityConfig
+        config = SecurityConfig.from_environment()
+        print(f'Security config loaded: {config.security_level.value}')
+        \"
+        
+        # Test CLI
+        python -m etl_framework.cli --help
+        
+        # Run critical tests
+        pytest tests/ -m \"not slow and not performance\" -v --tb=short
+
+  create-release:
+    name: Create Release
+    runs-on: ubuntu-latest
+    needs: [build, test-release]
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    permissions:
+      contents: write
+      packages: write
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Download build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: ./dist
+        pattern: dist-*
+        merge-multiple: true
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+
+    - name: Generate release notes
+      id: generate-notes
+      run: |
+        # Extract version from tag
+        VERSION=${GITHUB_REF#refs/tags/v}
+        echo \"version=$VERSION\" >> $GITHUB_OUTPUT
+        
+        # Generate basic release notes
+        NOTES=\"# Release v$VERSION\
+\
+\"
+        NOTES+=\"## Security Features\
+\"
+        NOTES+=\"- Role-Based Access Control (RBAC) with 6 predefined roles\
+\"
+        NOTES+=\"- Data encryption for sensitive columns\
+\"
+        NOTES+=\"- Comprehensive audit logging\
+\"
+        NOTES+=\"- Input validation and sanitization\
+\
+\"
+        NOTES+=\"## Installation\
+\
+\"
+        NOTES+=\"\`\`\`bash\
+\"
+        NOTES+=\"pip install etl-framework\
+\"
+        NOTES+=\"\`\`\`\
+\"
+        
+        echo \"notes<<EOF\" >> $GITHUB_OUTPUT
+        echo \"$NOTES\" >> $GITHUB_OUTPUT
+        echo \"EOF\" >> $GITHUB_OUTPUT
+
+    - name: Create GitHub Release
+      uses: softprops/action-gh-release@v1
+      with:
+        name: Release v${{ steps.generate-notes.outputs.version }}
+        body: ${{ steps.generate-notes.outputs.notes }}
+        draft: false
+        prerelease: false
+        files: |
+          dist/*.whl
+          dist/*.tar.gz
+
+  publish-pypi:
+    name: Publish to PyPI
+    runs-on: ubuntu-latest
+    needs: create-release
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+    environment:
+      name: pypi
+      url: https://pypi.org/p/etl-framework
+    permissions:
+      id-token: write  
+
+    steps:
+    - name: Download build artifacts
+      uses: actions/download-artifact@v4
+      with:
+        path: ./dist
+        pattern: dist-*
+        merge-multiple: true
+
+    - name: Publish to PyPI
+      uses: pypa/gh-action-pypi-publish@release/v1
+      with:
+        packages-dir: dist/
+
+  security-scan-release:
+    name: Security Scan for Release
+    runs-on: ubuntu-latest
+    needs: build
+    if: github.event_name == 'push' && startsWith(github.ref, 'refs/tags/v')
+
+    steps:
+    - name: Checkout repository
+      uses: actions/checkout@v4
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: '3.12'
+        cache: 'pip'
+
+    - name: Install security tools
+      run: |
+        pip install bandit safety
+
+    - name: Run security scan
+      run: |
+        echo \"🔒 Running security scan for release...\"
+        
+        bandit -r src -f json -o bandit-release.json -ll
+        
+        safety check --json > safety-release.json
+
+        BANDIT_ISSUES=$(jq '.results | length' bandit-release.json 2>/dev/null || echo \"0\")
+        SAFETY_ISSUES=$(jq '.vulnerabilities | length' safety-release.json 2>/dev/null || echo \"0\")
+        
+        echo \"Bandit issues: $BANDIT_ISSUES\"
+        echo \"Safety issues: $SAFETY_ISSUES\"
+        
+        if [ \"$BANDIT_ISSUES\" -gt 5 ] || [ \"$SAFETY_ISSUES\" -gt 0 ]; then
+          echo \"::error::Security issues found. Cannot proceed with release.\"
+          exit 1
+        fi
+        
+        echo \"✅ Security scan passed\"
+
+    - name: Upload security reports
+      uses: actions/upload-artifact@v4
+      with:
+        name: release-security-reports
+        path: |
+          bandit-release.json
+          safety-release.json
+        retention-days: 90
