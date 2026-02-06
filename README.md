@@ -210,8 +210,6 @@ etl-framework --source sensitive_data.csv --username admin
 ### Loading
 - **CSV** (.csv) - Universal format
 - **Excel** (.xlsx, .xls) - Microsoft Excel
-- **Parquet** (.parquet) - Columnar format, efficient for analytics
-- **Feather** (.feather) - Fast binary format
 - **Databases** - PostgreSQL, MySQL, SQLite via SQLAlchemy
 
 ## 📖 Documentation
