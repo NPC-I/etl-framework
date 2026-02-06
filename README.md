@@ -1,4 +1,4 @@
-# ETL Framework v1.0.0
+# ETL Framework v1.0.1
 
 A **fully JSON-driven**, modular ETL framework designed for extracting data from PDFs (and other sources), transforming it with configurable business logic, and loading to databases or files with intelligent strategies.
 
