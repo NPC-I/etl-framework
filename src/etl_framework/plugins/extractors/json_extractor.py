@@ -10,7 +10,7 @@ from etl_framework.core.extractor import Extractor
 from etl_framework.security.input_validator import InputValidator
 
 
-class JSONStringExtractor(Extractor):
+class JSONExtractor(Extractor):
     """Extracts data from JSON strings with security validation."""
 
     def __init__(self, validator: Optional[InputValidator] = None):
@@ -170,7 +170,7 @@ class JSONStringExtractor(Extractor):
             Dictionary with security information.
         """
         return {
-            "extractor_type": "JSONStringExtractor",
+            "extractor_type": "JSONExtractor",
             "has_security_validation": True,
             "validates_json": True,
             "uses_input_validator": True,

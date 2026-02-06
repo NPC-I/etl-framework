@@ -354,12 +354,12 @@ extractor = ExcelExtractor(validator=validator)
 df = extractor.extract("data/spreadsheet.xlsx")
 ```
 
-#### JSONStringExtractor
+#### JSONExtractor
 
 ```python
-from etl_framework.plugins.extractors.json_extractor import JSONStringExtractor
+from etl_framework.plugins.extractors.json_extractor import JSONExtractor
 
-extractor = JSONStringExtractor(validator=validator)
+extractor = JSONExtractor(validator=validator)
 df = extractor.extract('{"data": [{"id": 1, "name": "Test"}]}', json_path="data")
 ```
 

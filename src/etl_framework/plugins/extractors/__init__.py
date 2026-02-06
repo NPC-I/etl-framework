@@ -4,7 +4,7 @@ Data extractors for the ETL Framework.
 
 from etl_framework.plugins.extractors.csv_extractor import CSVExtractor
 from etl_framework.plugins.extractors.excel_extractor import ExcelExtractor
-from etl_framework.plugins.extractors.json_extractor import JSONStringExtractor
+from etl_framework.plugins.extractors.json_extractor import JSONExtractor
 from etl_framework.plugins.extractors.pdf_extractor import PDFExtractor
 
 # Import loaders
@@ -24,7 +24,7 @@ __all__ = [
     "CSVExtractor",
     "ExcelExtractor",
     "PDFExtractor",
-    "JSONStringExtractor",
+    "JSONExtractor",
     # Transformers
     "DataCleaner",
     "DataEnricher",

@@ -1,5 +1,5 @@
 """
-Tests for JSONStringExtractor.
+Tests for JSONExtractor.
 """
 import json
 import os
@@ -9,17 +9,17 @@ from pathlib import Path
 import pandas as pd
 import pytest
 
-from etl_framework.plugins.extractors.json_extractor import JSONStringExtractor
+from etl_framework.plugins.extractors.json_extractor import JSONExtractor
 from etl_framework.security.input_validator import InputValidator
 
 
-class TestJSONStringExtractor:
+class TestJSONExtractor:
     """Test JSON string extractor functionality."""
 
     def setup_method(self):
         """Set up test environment."""
         self.validator = InputValidator(security_level="testing")
-        self.extractor = JSONStringExtractor(self.validator)
+        self.extractor = JSONExtractor(self.validator)
 
     def test_extract_simple_json_array(self):
         """Test extracting simple JSON array."""
@@ -171,14 +171,14 @@ class TestJSONStringExtractor:
         dangerous_json = json.dumps(nested_data)
 
         # Should work in testing mode
-        extractor_testing = JSONStringExtractor(
+        extractor_testing = JSONExtractor(
             InputValidator(security_level="testing")
         )
         df_testing = extractor_testing.extract(dangerous_json)
         assert isinstance(df_testing, pd.DataFrame)
 
         # Should fail in production mode (either length or complexity)
-        extractor_production = JSONStringExtractor(
+        extractor_production = JSONExtractor(
             InputValidator(security_level="production")
         )
         try:
@@ -216,14 +216,14 @@ class TestJSONStringExtractor:
         """Test security information method."""
         info = self.extractor.get_security_info()
 
-        assert info["extractor_type"] == "JSONStringExtractor"
+        assert info["extractor_type"] == "JSONExtractor"
         assert info["has_security_validation"] == True
         assert info["validates_json"] == True
         assert info["uses_input_validator"] == True
 
     def test_extractor_without_validator(self):
         """Test extractor works without explicit validator."""
-        extractor = JSONStringExtractor()  # No validator provided
+        extractor = JSONExtractor()  # No validator provided
 
         json_string = '[{"test": "data"}]'
         df = extractor.extract(json_string)

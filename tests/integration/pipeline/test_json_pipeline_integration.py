@@ -10,7 +10,7 @@ import pytest
 
 from etl_framework.core.load_strategy import LoadOptions, LoadStrategy
 from etl_framework.core.pipeline import ETLPipeline
-from etl_framework.plugins.extractors.json_extractor import JSONStringExtractor
+from etl_framework.plugins.extractors.json_extractor import JSONExtractor
 from etl_framework.plugins.loaders.file_loader import FileLoader
 from etl_framework.plugins.transformers.cleaner import DataCleaner
 from etl_framework.plugins.transformers.mapping_loader import MappingLoader
@@ -30,7 +30,7 @@ class TestJSONPipelineIntegration:
         pipeline = ETLPipeline(username="test_user", enable_security=True)
 
         # Register components
-        pipeline.register_extractor("json", JSONStringExtractor(self.validator))
+        pipeline.register_extractor("json", JSONExtractor(self.validator))
         pipeline.register_loader("file", FileLoader())
 
         # Add basic cleaner
@@ -84,7 +84,7 @@ class TestJSONPipelineIntegration:
         pipeline = ETLPipeline(username="test_user", enable_security=True)
 
         # Register components
-        pipeline.register_extractor("json", JSONStringExtractor(self.validator))
+        pipeline.register_extractor("json", JSONExtractor(self.validator))
         pipeline.register_loader("file", FileLoader())
 
         # Create mapping JSON
@@ -165,7 +165,7 @@ class TestJSONPipelineIntegration:
 
         # Create validator with production security
         validator_prod = InputValidator(security_level="production")
-        pipeline.register_extractor("json", JSONStringExtractor(validator_prod))
+        pipeline.register_extractor("json", JSONExtractor(validator_prod))
         pipeline.register_loader("file", FileLoader())
 
         # Create deeply nested JSON (should fail in production)
@@ -205,7 +205,7 @@ class TestJSONPipelineIntegration:
         """Test JSON pipeline with LoadOptions."""
         pipeline = ETLPipeline(username="test_user", enable_security=True)
 
-        pipeline.register_extractor("json", JSONStringExtractor(self.validator))
+        pipeline.register_extractor("json", JSONExtractor(self.validator))
         pipeline.register_loader("file", FileLoader())
 
         pipeline.add_transformer(DataCleaner(enable_security=True))
@@ -273,7 +273,7 @@ class TestJSONPipelineIntegration:
             username="viewer", enable_security=True
         )  # Viewer role has limited permissions
 
-        pipeline.register_extractor("json", JSONStringExtractor(self.validator))
+        pipeline.register_extractor("json", JSONExtractor(self.validator))
         pipeline.register_loader("file", FileLoader())
 
         # Simple JSON data
@@ -317,7 +317,7 @@ class TestJSONPipelineIntegration:
         # Create pipeline with security and audit logging
         pipeline = ETLPipeline(username="operator", enable_security=True)
 
-        pipeline.register_extractor("json", JSONStringExtractor(self.validator))
+        pipeline.register_extractor("json", JSONExtractor(self.validator))
         pipeline.register_loader("file", FileLoader())
 
         pipeline.add_transformer(DataCleaner(enable_security=True))
@@ -360,7 +360,7 @@ class TestJSONPipelineIntegration:
         """Test JSON pipeline error handling."""
         pipeline = ETLPipeline(username="test_user", enable_security=True)
 
-        pipeline.register_extractor("json", JSONStringExtractor(self.validator))
+        pipeline.register_extractor("json", JSONExtractor(self.validator))
         pipeline.register_loader("file", FileLoader())
 
         # Invalid JSON data
@@ -392,7 +392,7 @@ class TestJSONPipelineIntegration:
         """Test JSON pipeline with sensitive data detection."""
         pipeline = ETLPipeline(username="operator", enable_security=True)
 
-        pipeline.register_extractor("json", JSONStringExtractor(self.validator))
+        pipeline.register_extractor("json", JSONExtractor(self.validator))
         pipeline.register_loader("file", FileLoader())
 
         pipeline.add_transformer(DataCleaner(enable_security=True))

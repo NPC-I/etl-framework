@@ -79,7 +79,7 @@ from etl_framework.core.load_strategy import LoadOptions, LoadStrategy
 from etl_framework.core.pipeline import ETLPipeline
 from etl_framework.plugins.extractors.csv_extractor import CSVExtractor
 from etl_framework.plugins.extractors.excel_extractor import ExcelExtractor
-from etl_framework.plugins.extractors.json_extractor import JSONStringExtractor
+from etl_framework.plugins.extractors.json_extractor import JSONExtractor
 from etl_framework.plugins.extractors.pdf_extractor import PDFExtractor
 from etl_framework.plugins.loaders.file_loader import FileLoader
 from etl_framework.plugins.loaders.sql_loader import SQLLoader
@@ -404,7 +404,7 @@ def main():
     elif args.extractor == "excel":
         pipeline.register_extractor("excel", ExcelExtractor(validator))
     elif args.extractor == "json":
-        pipeline.register_extractor("json", JSONStringExtractor(validator))
+        pipeline.register_extractor("json", JSONExtractor(validator))
 
     # Add transformers in logical order
     mapping_loader = None

@@ -10,8 +10,7 @@ authors = [
     {name = "Nathan Calow", email = "nathan@npc-it.co.uk"}
 ]
 readme = {file = "README.md", content-type = "text/markdown"}
-license = "MIT"
-license-files = ["LICEN[CS]E*"]
+license = {text = "MIT License"}
 classifiers = [
     "Development Status :: 5 - Production/Stable",
     "Intended Audience :: Developers",
@@ -30,7 +29,6 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Framework :: Pytest",
     "Natural Language :: English",
-    "License :: OSI Approved :: MIT License",
 ]
 keywords = ["etl", "data-pipeline", "data-processing", "json-configuration", "pandas", "security", "rbac", "encryption", "audit-logging"]
 requires-python = ">=3.8"

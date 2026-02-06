@@ -98,8 +98,6 @@ class SecurityConfig:
                 "ETL_ACCESS_CONTROL_ENABLED", "true"
             ).lower()
             == "true",
-            audit_logging_enabled=os.getenv("ETL_AUDIT_LOGGING_ENABLED", "true").lower()
-            == "true",
         )
 
     def get_restrictions(self) -> Dict[str, Any]:
